@@ -1,14 +1,32 @@
 "use server";
 
 import { z } from "zod";
+import { request } from "@arcjet/next";
 import { redirect } from "next/navigation";
 
 import { prisma } from "@/app/utils/db";
+import arcjet, { detectBot, shield } from "@/app/utils/arcjet";
 import { requireUser } from "@/app/utils/require-user";
 import { companySchema, jobSeekerSchema } from "@/app/utils/zodSchemas";
 
+const aj = arcjet
+  .withRule(shield({ mode: "LIVE" }))
+  .withRule(detectBot({ mode: "LIVE", allow: [] }));
+
 export const createCompany = async (data: z.infer<typeof companySchema>) => {
   const session = await requireUser();
+
+  const req = await request();
+
+  if (req.method !== "POST") {
+    return redirect("/");
+  }
+
+  const decision = await aj.protect(req);
+
+  if (decision.isDenied()) {
+    throw new Error("Forbidden");
+  }
 
   const validatedData = companySchema.parse(data);
 
@@ -34,6 +52,18 @@ export const createJobSeeker = async (
   data: z.infer<typeof jobSeekerSchema>
 ) => {
   const user = await requireUser();
+
+  const req = await request();
+
+  if (req.method !== "POST") {
+    return redirect("/");
+  }
+
+  const decision = await aj.protect(req);
+
+  if (decision.isDenied()) {
+    throw new Error("Forbidden");
+  }
 
   const validatedData = jobSeekerSchema.parse(data);
 
