@@ -26,7 +26,7 @@ export const UserTypeSelectionForm = ({
           onClick={() => onSelect("company")}
           variant="outline"
           size="lg"
-          className="w-full h-auto p-6 items-center gap-4 border-2 transition-all duration-200 hover:border-primary hover:bg-primary/5 cursor-pointer"
+          className="w-full h-auto p-6 items-center gap-4 border-2 transition-all duration-200 hover:border-primary hover:bg-primary/5"
         >
           <div className="size-12 flex items-center justify-center rounded-full bg-primary/10">
             <Building2 className="size-6 text-primary" />
@@ -36,12 +36,11 @@ export const UserTypeSelectionForm = ({
             <p>Posts jobs and find exeptional talent</p>
           </div>
         </Button>
-
         <Button
           onClick={() => onSelect("jobSeeker")}
           variant="outline"
           size="lg"
-          className="w-full h-auto p-6 items-center gap-4 border-2 transition-all duration-200 hover:border-primary hover:bg-primary/5 cursor-pointer"
+          className="w-full h-auto p-6 items-center gap-4 border-2 transition-all duration-200 hover:border-primary hover:bg-primary/5"
         >
           <div className="size-12 flex items-center justify-center rounded-full bg-primary/10">
             <UserRound className="size-6 text-primary" />
