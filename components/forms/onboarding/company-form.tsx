@@ -34,6 +34,8 @@ import { companySchema } from "@/app/utils/zodSchemas";
 import { countryList } from "@/app/utils/countriesList";
 
 export const CompanyForm = () => {
+  const [pending, setPending] = useState<boolean>(false);
+
   const form = useForm<z.infer<typeof companySchema>>({
     resolver: zodResolver(companySchema),
     defaultValues: {
@@ -45,8 +47,6 @@ export const CompanyForm = () => {
       xAccount: "",
     },
   });
-
-  const [pending, setPending] = useState(false);
 
   const onSubmit = async (data: z.infer<typeof companySchema>) => {
     try {

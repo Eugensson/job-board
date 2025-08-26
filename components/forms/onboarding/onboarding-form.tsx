@@ -6,6 +6,7 @@ import { useState } from "react";
 import Logo from "@/public/logo.png";
 import { Card, CardContent } from "@/components/ui/card";
 import { CompanyForm } from "@/components/forms/onboarding/company-form";
+import { JobSeekerForm } from "@/components/forms/onboarding/job-seeker-form";
 import { UserTypeSelectionForm } from "@/components/forms/onboarding/user-type-selection-form";
 
 export type StepType = 1 | 2;
@@ -25,11 +26,7 @@ export const OnboardingForm = () => {
       case 1:
         return <UserTypeSelectionForm onSelect={handleUrerTypeSelection} />;
       case 2:
-        return userType === "company" ? (
-          <CompanyForm />
-        ) : (
-          <p>User is a job seeker</p>
-        );
+        return userType === "company" ? <CompanyForm /> : <JobSeekerForm />;
       default:
         return null;
     }
