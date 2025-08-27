@@ -98,7 +98,7 @@ export const CompanyForm = () => {
                       <SelectLabel>Worldwide</SelectLabel>
                       <SelectItem value="worldwide">
                         <span>🌍</span>
-                        <span>Worldwide / Remote</span>
+                        <span className="pl-1">Worldwide / Remote</span>
                       </SelectItem>
                     </SelectGroup>
                     <SelectGroup>
