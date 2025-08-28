@@ -10,8 +10,11 @@ import {
   jobSeekerSchema,
 } from "@/app/utils/zodSchemas";
 import { prisma } from "@/app/utils/db";
+import { stripe } from "@/app/utils/stripe";
+import { inngest } from "@/app/utils/inngest/client";
 import { requireUser } from "@/app/utils/require-user";
 import arcjet, { detectBot, shield } from "@/app/utils/arcjet";
+import { jobListingDurationPricing } from "@/app/utils/job-listing-duration-pricing";
 
 const aj = arcjet
   .withRule(shield({ mode: "LIVE" }))
@@ -108,6 +111,11 @@ export const createJob = async (data: z.infer<typeof jobSchema>) => {
     where: { userId: user.id },
     select: {
       id: true,
+      user: {
+        select: {
+          stripeCustomerId: true,
+        },
+      },
     },
   });
 
@@ -115,7 +123,24 @@ export const createJob = async (data: z.infer<typeof jobSchema>) => {
     return redirect("/");
   }
 
-  await prisma.jobPost.create({
+  let stripeCustomerId = company.user?.stripeCustomerId;
+
+  if (!stripeCustomerId) {
+    const customer = await stripe.customers.create({
+      email: user.email as string,
+      name: user.name as string,
+    });
+
+    stripeCustomerId = customer.id;
+
+    // Update user with Stripe customer ID
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { stripeCustomerId: customer.id },
+    });
+  }
+
+  const jobPost = await prisma.jobPost.create({
     data: {
       jobDescription: validatedData.jobDescription,
       jobTitle: validatedData.jobTitle,
@@ -129,5 +154,47 @@ export const createJob = async (data: z.infer<typeof jobSchema>) => {
     },
   });
 
-  return redirect("/");
+  const pricingTier = jobListingDurationPricing.find(
+    (tier) => tier.days === validatedData.listingDuration
+  );
+
+  if (!pricingTier) {
+    throw new Error("Invalid listing duration selected");
+  }
+
+  await inngest.send({
+    name: "job/created",
+    data: {
+      jobId: jobPost.id,
+      expirationDays: validatedData.listingDuration,
+    },
+  });
+
+  const session = await stripe.checkout.sessions.create({
+    customer: stripeCustomerId,
+    line_items: [
+      {
+        price_data: {
+          product_data: {
+            name: `Job Posting - ${pricingTier.days} Days`,
+            description: pricingTier.description,
+            images: [
+              "https://9lomklk6m8.ufs.sh/f/f7if3XnYVcUrBHhIs6JehofxskM7ZjqJD5HAyaTXEv8Rcwgm",
+            ],
+          },
+          currency: "USD",
+          unit_amount: pricingTier.price * 100, // Convert to cents for Stripe
+        },
+        quantity: 1,
+      },
+    ],
+    metadata: {
+      jobId: jobPost.id,
+    },
+    mode: "payment",
+    success_url: `${process.env.NEXT_PUBLIC_URL}/payment/success`,
+    cancel_url: `${process.env.NEXT_PUBLIC_URL}/payment/cancel`,
+  });
+
+  return redirect(session.url as string);
 };

@@ -23,6 +23,7 @@ model User {
   jobSeeker           JobSeeker?
   accounts            Account[]
   sessions            Session[]
+  stripeCustomerId    String?    @unique
   userType            UserType?
   createdAt           DateTime   @default(now())
   updatedAt           DateTime   @updatedAt
@@ -108,7 +109,7 @@ model JobPost {
   benefits        String[]
   status          JobPostStatus @default(DRAFT)
   company         Company       @relation(fields: [companyId], references: [id])
-  companyId       String        @unique
+  companyId       String
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 }
