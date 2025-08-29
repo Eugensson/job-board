@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { request } from "@arcjet/next";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 import {
   companySchema,
@@ -23,17 +24,17 @@ const aj = arcjet
 export const createCompany = async (data: z.infer<typeof companySchema>) => {
   const session = await requireUser();
 
-  // const req = await request();
+  const req = await request();
 
-  // if (req.method !== "POST") {
-  //   return redirect("/");
-  // }
+  if (req.method !== "POST") {
+    return redirect("/");
+  }
 
-  // const decision = await aj.protect(req);
+  const decision = await aj.protect(req);
 
-  // if (decision.isDenied()) {
-  //   throw new Error("Forbidden");
-  // }
+  if (decision.isDenied()) {
+    throw new Error("Forbidden");
+  }
 
   const validatedData = companySchema.parse(data);
 
@@ -93,17 +94,17 @@ export const createJobSeeker = async (
 export const createJob = async (data: z.infer<typeof jobSchema>) => {
   const user = await requireUser();
 
-  // const req = await request();
+  const req = await request();
 
-  // if (req.method !== "POST") {
-  //   return redirect("/");
-  // }
+  if (req.method !== "POST") {
+    return redirect("/");
+  }
 
-  // const decision = await aj.protect(req);
+  const decision = await aj.protect(req);
 
-  // if (decision.isDenied()) {
-  //   throw new Error("Forbidden");
-  // }
+  if (decision.isDenied()) {
+    throw new Error("Forbidden");
+  }
 
   const validatedData = jobSchema.parse(data);
 
@@ -197,4 +198,41 @@ export const createJob = async (data: z.infer<typeof jobSchema>) => {
   });
 
   return redirect(session.url as string);
+};
+
+export const saveJobPosts = async (jobId: string) => {
+  const user = await requireUser();
+
+  const req = await request();
+
+  const decision = await aj.protect(req);
+
+  if (decision.isDenied()) {
+    throw new Error("Forbidden");
+  }
+
+  await prisma.savedJobPost.create({
+    data: { jobPostId: jobId, userId: user.id as string },
+  });
+
+  revalidatePath(`/job/${jobId}`);
+};
+
+export const unSaveJobPosts = async (savedJobPostId: string) => {
+  const user = await requireUser();
+
+  const req = await request();
+
+  const decision = await aj.protect(req);
+
+  if (decision.isDenied()) {
+    throw new Error("Forbidden");
+  }
+
+  const data = await prisma.savedJobPost.delete({
+    where: { id: savedJobPostId, userId: user.id as string },
+    select: { jobPostId: true },
+  });
+
+  revalidatePath(`/job/${data.jobPostId}`);
 };

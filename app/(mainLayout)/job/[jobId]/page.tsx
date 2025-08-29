@@ -1,44 +1,87 @@
+import Link from "next/link";
 import Image from "next/image";
 import { Heart } from "lucide-react";
+import { request } from "@arcjet/next";
 import { notFound } from "next/navigation";
 
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { JsonToHtml } from "@/components/general/json-to-html";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { SavedJobButton } from "@/components/general/submit-buttons";
 
 import { cn } from "@/lib/utils";
 import { prisma } from "@/app/utils/db";
+import { auth } from "@/app/utils/auth";
 import { getFlagIcon } from "@/app/utils/countriesList";
 import { benefitList } from "@/app/utils/list-of-benefits";
+import arcjet, { detectBot, tokenBucket } from "@/app/utils/arcjet";
+import { saveJobPosts, unSaveJobPosts } from "@/app/actions";
 
-const getJob = async (jobId: string) => {
-  const jobData = await prisma.jobPost.findUnique({
-    where: { status: "ACTIVE", id: jobId },
-    select: {
-      jobTitle: true,
-      jobDescription: true,
-      location: true,
-      employmentType: true,
-      listingDuration: true,
-      benefits: true,
-      createdAt: true,
-      company: {
-        select: {
-          name: true,
-          location: true,
-          about: true,
-          logo: true,
+const aj = arcjet.withRule(
+  detectBot({
+    mode: "LIVE",
+    allow: ["CATEGORY:SEARCH_ENGINE", "CATEGORY:PREVIEW"],
+  })
+);
+
+const getClient = (session: boolean) => {
+  if (session) {
+    return aj.withRule(
+      tokenBucket({
+        mode: "DRY_RUN",
+        capacity: 100,
+        interval: 60,
+        refillRate: 30,
+      })
+    );
+  } else {
+    return aj.withRule(
+      tokenBucket({
+        mode: "DRY_RUN",
+        capacity: 100,
+        interval: 60,
+        refillRate: 10,
+      })
+    );
+  }
+};
+
+const getJob = async (jobId: string, userId?: string) => {
+  const [jobData, savedJob] = await Promise.all([
+    await prisma.jobPost.findUnique({
+      where: { status: "ACTIVE", id: jobId },
+      select: {
+        jobTitle: true,
+        jobDescription: true,
+        location: true,
+        employmentType: true,
+        listingDuration: true,
+        benefits: true,
+        createdAt: true,
+        company: {
+          select: {
+            name: true,
+            location: true,
+            about: true,
+            logo: true,
+          },
         },
       },
-    },
-  });
+    }),
+    userId
+      ? prisma.savedJobPost.findUnique({
+          where: { jobPostId_userId: { jobPostId: jobId, userId } },
+          select: { id: true },
+        })
+      : null,
+  ]);
 
   if (!jobData) {
     return notFound();
   }
 
-  return jobData;
+  return { jobData, savedJob };
 };
 
 type Params = Promise<{ jobId: string }>;
@@ -46,7 +89,17 @@ type Params = Promise<{ jobId: string }>;
 const JobDetailsPage = async ({ params }: { params: Params }) => {
   const { jobId } = await params;
 
-  const data = await getJob(jobId);
+  const session = await auth();
+
+  const req = await request();
+
+  const decision = await getClient(!!session).protect(req, { requested: 10 });
+
+  if (decision.isDenied()) {
+    throw new Error("Forbidden");
+  }
+
+  const { jobData: data, savedJob } = await getJob(jobId, session?.user?.id);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8">
@@ -64,10 +117,25 @@ const JobDetailsPage = async ({ params }: { params: Params }) => {
               </Badge>
             </div>
           </div>
-          <Button variant="outline" size="lg">
-            <Heart className="size-4" />
-            Save Job
-          </Button>
+          {session?.user ? (
+            <form
+              action={
+                savedJob
+                  ? unSaveJobPosts.bind(null, savedJob.id)
+                  : saveJobPosts.bind(null, jobId)
+              }
+            >
+              <SavedJobButton savedJob={!!savedJob} />
+            </form>
+          ) : (
+            <Link
+              href="/login"
+              className={buttonVariants({ variant: "outline", size: "lg" })}
+            >
+              <Heart className="size-4" />
+              Save Job
+            </Link>
+          )}
         </div>
         <section className="min-h-40">
           <JsonToHtml json={JSON.parse(data.jobDescription)} />
