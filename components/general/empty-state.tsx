@@ -17,7 +17,7 @@ export const EmptyState = ({
   href,
 }: IAppProps) => {
   return (
-    <div className="h-full flex flex-1 flex-col items-center justify-center gap-5 border border-primary/50 border-dashed rounded-md p-10">
+    <div className="h-fit flex flex-1 flex-col items-center justify-center gap-5 border border-primary/50 border-dashed rounded-md p-10">
       <div className="size-20 flex items-center justify-center rounded-full bg-primary/10">
         <SearchX className="size-10 text-primary" />
       </div>

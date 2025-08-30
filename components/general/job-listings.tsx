@@ -1,58 +1,106 @@
+import { JobPostStatus } from "@prisma/client";
+
 import { JobCard } from "@/components/general/job-card";
 import { EmptyState } from "@/components/general/empty-state";
+import { PaginationComponent } from "@/components/general/pagination-component";
 
 import { prisma } from "@/utils/db";
 
-async function getData() {
-  const data = await prisma.jobPost.findMany({
-    where: { status: "ACTIVE" },
-    select: {
-      id: true,
-      jobTitle: true,
-      salaryFrom: true,
-      salaryTo: true,
-      employmentType: true,
-      location: true,
-      createdAt: true,
-      company: {
-        select: {
-          name: true,
-          logo: true,
-          location: true,
-          about: true,
+const getJobs = async (
+  page: number = 1,
+  pageSize: number = 10,
+  jobTypes: string[] = [],
+  location: string = "",
+  minSalary?: string,
+  maxSalary?: string
+) => {
+  const skip = (page - 1) * pageSize;
+
+  const where = {
+    status: JobPostStatus.ACTIVE,
+    ...(jobTypes.length > 0 && { employmentType: { in: jobTypes } }),
+    ...(location && location !== "worldwide" && { location: location }),
+    ...(minSalary && { salaryTo: { gte: Number(minSalary) } }),
+    ...(maxSalary && { salaryFrom: { lte: Number(maxSalary) } }),
+  };
+
+  const [data, totalCount] = await Promise.all([
+    prisma.jobPost.findMany({
+      skip,
+      take: pageSize,
+      where,
+      select: {
+        jobTitle: true,
+        id: true,
+        salaryFrom: true,
+        salaryTo: true,
+        employmentType: true,
+        location: true,
+        createdAt: true,
+        company: {
+          select: {
+            name: true,
+            logo: true,
+            location: true,
+            about: true,
+          },
         },
       },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+      orderBy: {
+        createdAt: "desc",
+      },
+    }),
+    prisma.jobPost.count({ where }),
+  ]);
 
-  return data;
-}
+  return {
+    jobs: data,
+    totalPages: Math.ceil(totalCount / pageSize),
+    currentPage: page,
+  };
+};
 
-export const JobListings = async () => {
-  const data = await getData();
+export const JobListings = async ({
+  currentPage,
+  jobTypes,
+  location,
+  minSalary,
+  maxSalary,
+}: {
+  currentPage: number;
+  jobTypes: string[];
+  location: string;
+  minSalary: string;
+  maxSalary: string;
+}) => {
+  const {
+    jobs,
+    totalPages,
+    currentPage: page,
+  } = await getJobs(currentPage, 7, jobTypes, location, minSalary, maxSalary);
 
   return (
-    <>
-      {data.length > 0 ? (
-        <ul className="flex flex-col gap-6">
-          {data.map((job) => (
-            <li key={job.id}>
-              <JobCard job={job} />
-            </li>
+    <section>
+      {jobs.length > 0 ? (
+        <div className="flex flex-col gap-6">
+          {jobs.map((job, index) => (
+            <JobCard job={job} key={index} />
           ))}
-        </ul>
+        </div>
       ) : (
         <EmptyState
-          title="No job posts"
-          description="We couldn’t find any job posts matching your search. Try adjusting your
-        filters or check back later."
+          title="No jobs found"
+          description="Try searching for a different job title or location."
           buttonText="Clear all filters"
           href="/"
         />
       )}
-    </>
+
+      {jobs.length > 1 ? (
+        <div className="flex justify-center mt-10">
+          <PaginationComponent totalPages={totalPages} currentPage={page} />
+        </div>
+      ) : null}
+    </section>
   );
 };

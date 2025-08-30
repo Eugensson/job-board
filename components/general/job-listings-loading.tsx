@@ -12,7 +12,7 @@ const SkeletonChips = ({ count }: { count: number }) => (
 export const JobListingsLoading = () => {
   return (
     <div className="flex flex-col gap-6">
-      {Array.from({ length: 10 }, (_, index) => (
+      {Array.from({ length: 3 }, (_, index) => (
         <Card key={index} className="p-6">
           <div className="flex items-start gap-4">
             <Skeleton className="h-14 w-14 rounded" />
