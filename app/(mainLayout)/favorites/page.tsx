@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
+
 import { JobCard } from "@/components/general/job-card";
 import { EmptyState } from "@/components/general/empty-state";
 
 import { prisma } from "@/app/utils/db";
 import { requireUser } from "@/app/utils/require-user";
+
+export const metadata: Metadata = {
+  title: "Favorite Jobs",
+};
 
 const getFavorites = async (userId: string) => {
   const data = await prisma.savedJobPost.findMany({

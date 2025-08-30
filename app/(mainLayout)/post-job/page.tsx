@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import {
@@ -15,6 +16,10 @@ import { CreateJobForm } from "@/components/forms/create-job-form";
 
 import { prisma } from "@/app/utils/db";
 import { requireUser } from "@/app/utils/require-user";
+
+export const metadata: Metadata = {
+  title: "Create a Job Post",
+};
 
 const companies = [
   { id: "1", name: "ArcJet", logo: ArcjetLogo },

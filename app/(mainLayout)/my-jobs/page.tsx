@@ -1,11 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import {
-  CopyCheckIcon,
-  MoreHorizontal,
-  PenBoxIcon,
-  XCircle,
-} from "lucide-react";
+import type { Metadata } from "next";
+import { MoreHorizontal, PenBoxIcon, XCircle } from "lucide-react";
 
 import {
   Card,
@@ -31,10 +27,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { CopyLink } from "@/components/general/copy-link";
 import { EmptyState } from "@/components/general/empty-state";
 
 import { prisma } from "@/app/utils/db";
 import { requireUser } from "@/app/utils/require-user";
+
+export const metadata: Metadata = {
+  title: "Job Listings",
+};
 
 const getJobs = async (userId: string) => {
   const data = await prisma.jobPost.findMany({
@@ -122,20 +123,17 @@ const MyJobsPage = async () => {
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
                           <DropdownMenuItem asChild>
                             <Link href={`/my-jobs/${id}/edit`}>
-                              <PenBoxIcon />
+                              <PenBoxIcon className="size-4" />
                               Edit Job
                             </Link>
                           </DropdownMenuItem>
-                          <DropdownMenuItem asChild>
-                            <Link href={`/my-jobs/${id}/edit`}>
-                              <CopyCheckIcon />
-                              Copy Job URL
-                            </Link>
-                          </DropdownMenuItem>
+                          <CopyLink
+                            jobUrl={`${process.env.NEXT_PUBLIC_URL}/job/${id}`}
+                          />
                           <DropdownMenuSeparator />
                           <DropdownMenuItem asChild>
                             <Link href={`/my-jobs/${id}/delete`}>
-                              <XCircle />
+                              <XCircle className="size-4" />
                               Delete Job
                             </Link>
                           </DropdownMenuItem>

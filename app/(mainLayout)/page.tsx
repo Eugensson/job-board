@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
+
 import { JobFilter } from "@/components/general/job-filter";
 import { JobListings } from "@/components/general/job-listings";
+
+export const metadata: Metadata = {
+  title: "Home",
+};
 
 const Home = () => {
   return (
