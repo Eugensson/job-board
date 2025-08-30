@@ -6,7 +6,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/general/theme-toggle";
 import { UserDropdown } from "@/components/general/user-dropdown";
 
-import { auth } from "@/app/utils/auth";
+import { auth } from "@/auth";
 
 export const Navbar = async () => {
   const session = await auth();

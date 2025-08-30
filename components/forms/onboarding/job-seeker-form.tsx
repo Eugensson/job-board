@@ -21,8 +21,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { UploadDropzone } from "@/components/general/uploadthing-reexported";
 
-import { createJobSeeker } from "@/app/actions";
-import { jobSeekerSchema } from "@/app/utils/zodSchemas";
+import { jobSeekerSchema } from "@/schemas";
+import { createJobSeeker } from "@/actions/onboarding.actions";
 
 export const JobSeekerForm = () => {
   const [pending, setPending] = useState<boolean>(false);

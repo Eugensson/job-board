@@ -1,7 +1,7 @@
 import { UploadThingError } from "uploadthing/server";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 
-import { requireUser } from "@/app/utils/require-user";
+import { requireUser } from "@/utils/require-user";
 
 const f = createUploadthing();
 

@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 
 import { EditJobForm } from "@/components/forms/edit-job-form";
 
-import { prisma } from "@/app/utils/db";
-import { requireUser } from "@/app/utils/auth-guards";
+import { prisma } from "@/utils/db";
+import { requireUser } from "@/utils/auth-guards";
 
 export const metadata: Metadata = {
   title: "Edit Post",

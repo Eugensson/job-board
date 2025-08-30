@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { GeneralSubmitButton } from "@/components/general/submit-buttons";
 
-import { auth, signIn } from "@/app/utils/auth";
+import { auth, signIn } from "@/auth";
 
 export const LoginForm = async () => {
   const session = await auth();

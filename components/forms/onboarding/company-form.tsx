@@ -29,9 +29,9 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { UploadDropzone } from "@/components/general/uploadthing-reexported";
 
-import { createCompany } from "@/app/actions";
-import { companySchema } from "@/app/utils/zodSchemas";
-import { countryList } from "@/app/utils/countriesList";
+import { companySchema } from "@/schemas";
+import { countryList } from "@/utils/countries-list";
+import { createCompany } from "@/actions/onboarding.actions";
 
 export const CompanyForm = () => {
   const [pending, setPending] = useState<boolean>(false);

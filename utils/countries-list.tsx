@@ -1,24 +1,6 @@
 import { JSX } from "react";
 import "flag-icons/css/flag-icons.min.css";
 
-export function getFlagIcon(location: string): JSX.Element {
-  const cleanLocation = location.trim().toLowerCase();
-
-  if (cleanLocation === "worldwide" || cleanLocation === "remote") {
-    return <span className="text-lg">🌍</span>;
-  }
-
-  const country = countryList.find((country) =>
-    cleanLocation.includes(country.name.toLowerCase())
-  );
-
-  if (country) {
-    return <span className={`fi fi-${country.code.toLowerCase()}`} />;
-  }
-
-  return <span className="text-lg">🌍</span>;
-}
-
 export const countryList = [
   { name: "Afghanistan", code: "AF", phoneCode: "+93" },
   { name: "Aland Islands", code: "AX", phoneCode: "+358" },
@@ -159,3 +141,21 @@ export const countryList = [
   { name: "Vietnam", code: "VN", phoneCode: "+84" },
   { name: "Zimbabwe", code: "ZW", phoneCode: "+263" },
 ];
+
+export const getFlagIcon = (location: string): JSX.Element => {
+  const cleanLocation = location.trim().toLowerCase();
+
+  if (cleanLocation === "worldwide" || cleanLocation === "remote") {
+    return <span className="text-lg">🌍</span>;
+  }
+
+  const country = countryList.find((country) =>
+    cleanLocation.includes(country.name.toLowerCase())
+  );
+
+  if (country) {
+    return <span className={`fi fi-${country.code.toLowerCase()}`} />;
+  }
+
+  return <span className="text-lg">🌍</span>;
+};

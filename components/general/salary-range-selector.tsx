@@ -6,7 +6,7 @@ import { Control, useController } from "react-hook-form";
 
 import { Slider } from "@/components/ui/slider";
 
-import { formatCurrency } from "@/app/utils/format-currency";
+import { formatCurrency } from "@/utils/format-currency";
 
 interface IAappProps {
   control: Control<any>;

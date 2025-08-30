@@ -35,9 +35,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SalaryRangeSelector } from "@/components/general/salary-range-selector";
 import { JobDescriptionEditor } from "@/components/rich-text-editor/job-description-editor";
 
-import { editJobPost } from "@/app/actions";
-import { jobSchema } from "@/app/utils/zodSchemas";
-import { countryList } from "@/app/utils/countriesList";
+import { jobSchema } from "@/schemas";
+import { editJobPost } from "@/actions/job.actions";
+import { countryList } from "@/utils/countries-list";
 
 interface iAppProps {
   jobPost: {

@@ -14,8 +14,8 @@ import InngestLogo from "@/public/inngest-locale.png";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CreateJobForm } from "@/components/forms/create-job-form";
 
-import { prisma } from "@/app/utils/db";
-import { requireUser } from "@/app/utils/require-user";
+import { prisma } from "@/utils/db";
+import { requireUser } from "@/utils/require-user";
 
 export const metadata: Metadata = {
   title: "Create a Job Post",

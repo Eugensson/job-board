@@ -2,8 +2,8 @@ import "server-only";
 
 import { redirect } from "next/navigation";
 
-import { auth } from "@/app/utils/auth";
-import { prisma } from "@/app/utils/db";
+import { auth } from "@/auth";
+import { prisma } from "@/utils/db";
 
 export const requireUser = async () => {
   const session = await auth();

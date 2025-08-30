@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 import { cn } from "@/lib/utils";
-import { jobListingDurationPricing } from "@/app/utils/job-listing-duration-pricing";
+import { jobListingDurationPricing } from "@/utils/job-listing-duration-pricing";
 
 interface IAppProps {
   field: ControllerRenderProps;

@@ -11,12 +11,12 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { SavedJobButton } from "@/components/general/submit-buttons";
 
 import { cn } from "@/lib/utils";
-import { prisma } from "@/app/utils/db";
-import { auth } from "@/app/utils/auth";
-import { getFlagIcon } from "@/app/utils/countriesList";
-import { benefitList } from "@/app/utils/list-of-benefits";
-import arcjet, { detectBot, tokenBucket } from "@/app/utils/arcjet";
-import { saveJobPosts, unSaveJobPosts } from "@/app/actions";
+import { prisma } from "@/utils/db";
+import { auth } from "@/auth";
+import { getFlagIcon } from "@/utils/countries-list";
+import { benefitList } from "@/utils/list-of-benefits";
+import arcjet, { detectBot, tokenBucket } from "@/utils/arcjet";
+import { saveJobPosts, unSaveJobPosts } from "@/actions/job.actions";
 
 const aj = arcjet.withRule(
   detectBot({

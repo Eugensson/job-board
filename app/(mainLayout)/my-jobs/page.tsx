@@ -30,8 +30,8 @@ import { Button } from "@/components/ui/button";
 import { CopyLink } from "@/components/general/copy-link";
 import { EmptyState } from "@/components/general/empty-state";
 
-import { prisma } from "@/app/utils/db";
-import { requireUser } from "@/app/utils/require-user";
+import { prisma } from "@/utils/db";
+import { requireUser } from "@/utils/require-user";
 
 export const metadata: Metadata = {
   title: "Job Listings",

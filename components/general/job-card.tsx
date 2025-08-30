@@ -5,8 +5,8 @@ import { MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader } from "@/components/ui/card";
 
-import { formatCurrency } from "@/app/utils/format-currency";
-import { formatRelativeTime } from "@/app/utils/format-relative-time";
+import { formatCurrency } from "@/utils/format-currency";
+import { formatRelativeTime } from "@/utils/format-relative-time";
 
 interface IAppProps {
   job: {

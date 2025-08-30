@@ -35,9 +35,9 @@ import { SalaryRangeSelector } from "@/components/general/salary-range-selector"
 import { JobDescriptionEditor } from "@/components/rich-text-editor/job-description-editor";
 import { JobListingDurationSelector } from "@/components/general/job-listing-duration-selector";
 
-import { createJob } from "@/app/actions";
-import { jobSchema } from "@/app/utils/zodSchemas";
-import { countryList } from "@/app/utils/countriesList";
+import { jobSchema } from "@/schemas";
+import { createJob } from "@/actions/job.actions";
+import { countryList } from "@/utils/countries-list";
 
 interface IAppProps {
   companyName: string;

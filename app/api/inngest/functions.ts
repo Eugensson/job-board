@@ -1,6 +1,6 @@
-import { prisma } from "@/app/utils/db";
-import { inngest } from "@/app/utils/inngest/client";
-import { sendEmail } from "@/app/utils/mail";
+import { prisma } from "@/utils/db";
+import { inngest } from "@/utils/inngest/client";
+import { sendEmail } from "@/utils/mail";
 
 export const helloWorld = inngest.createFunction(
   { id: "hello-world" },

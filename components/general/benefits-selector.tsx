@@ -4,7 +4,7 @@ import { ControllerRenderProps } from "react-hook-form";
 
 import { Badge } from "@/components/ui/badge";
 
-import { benefitList } from "@/app/utils/list-of-benefits";
+import { benefitList } from "@/utils/list-of-benefits";
 
 interface IAppProps {
   field: ControllerRenderProps;

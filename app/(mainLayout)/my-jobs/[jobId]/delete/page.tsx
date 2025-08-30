@@ -12,7 +12,7 @@ import {
 import { buttonVariants } from "@/components/ui/button";
 import { GeneralSubmitButton } from "@/components/general/submit-buttons";
 
-import { deleteJobPost } from "@/app/actions";
+import { deleteJobPost } from "@/actions/job.actions";
 
 export const metadata: Metadata = {
   title: "Delete Post",

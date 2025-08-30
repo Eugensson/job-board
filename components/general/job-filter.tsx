@@ -15,7 +15,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import { countryList } from "@/app/utils/countriesList";
+import { countryList } from "@/utils/countries-list";
 
 const jobTypes = [
   { name: "Full Time", value: "full-time" },

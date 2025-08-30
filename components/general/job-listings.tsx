@@ -1,7 +1,7 @@
 import { JobCard } from "@/components/general/job-card";
 import { EmptyState } from "@/components/general/empty-state";
 
-import { prisma } from "@/app/utils/db";
+import { prisma } from "@/utils/db";
 
 async function getData() {
   const data = await prisma.jobPost.findMany({

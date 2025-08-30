@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-import { signOut } from "@/app/utils/auth";
+import { signOut } from "@/auth";
 
 interface IAppProps {
   email: string;

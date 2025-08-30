@@ -5,7 +5,7 @@ import {
   helloWorld,
   sendPeriodicJobListings,
 } from "@/app/api/inngest/functions";
-import { inngest } from "@/app/utils/inngest/client";
+import { inngest } from "@/utils/inngest/client";
 
 // Create an API that serves zero functions
 export const { GET, POST, PUT } = serve({
